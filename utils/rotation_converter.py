@@ -451,7 +451,7 @@ def batch_axis2matrix(theta):
     return quaternion_to_rotation_matrix(angle_axis_to_quaternion(theta))
 
 def batch_axis2euler(theta):
-    raise NotImplementedError
+    return batch_matrix2euler(batch_axis2matrix(theta))
 
 def batch_rodrigues(rot_vecs, epsilon=1e-8, dtype=torch.float32):
     '''  same as batch_matrix2axis
@@ -490,7 +490,7 @@ def batch_rodrigues(rot_vecs, epsilon=1e-8, dtype=torch.float32):
     return rot_mat
 
 def inverse_batch_rodrigues(rot_vecs, epsilon=1e-8, dtype=torch.float32):
-    raise NotImplementedError
+    raise 
 
 def batch_cont2matrix(module_input):
     ''' Decoder for transforming a latent representation to rotation matrices
