@@ -23,7 +23,6 @@ def load_smplx(filepath='examples/smplx.pkl'):
     with open(filepath, 'rb') as f:
         codedict = pickle.load(f)
 
-
     ## KEY #1 : full_pose
 
     assert 'full_pose' in codedict.keys()
