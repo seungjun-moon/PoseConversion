@@ -9,7 +9,8 @@ from utils.load_params import load_smplx, load_flame
 from pytorch3d.transforms import matrix_to_euler_angles
 
 def smplx_to_smpl(smplx_path, return_axis=False):
-    full_pose, cam, exp = load_smplx(smplx_path)
+    full_pose, cam, exp, shape = load_smplx(smplx_path)
+
 
 
 def main(args):
