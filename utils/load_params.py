@@ -1,9 +1,9 @@
-import ost
+import os
 import pickle
 import torch
 import numpy as np
 
-def load_pixie_smplx(actions_file='/home/yfeng/github/SCARF/data/pixie_radioactive.pkl'):
+def load_pixie_smplx(actions_file='examples/pixie_radioactive.pkl'):
     # load pixie animation poses
     assert os.path.exists(actions_file), f'{actions_file} does not exist'
     with open(actions_file, 'rb') as f:

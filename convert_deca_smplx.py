@@ -4,16 +4,41 @@ import torch
 import pickle
 import argparse
 import numpy as np
-from utils.rotation_converter import batch_rodrigue, batch_euler2axis
+from utils.rotation_converter import batch_rodrigues, batch_euler2axis, batch_matrix2axis, batch_axis2euler, inverse_batch_rodrigues
 from utils.load_params import load_pixie_smplx, load_deca_flame
 
 def smplx_to_smpl(smplx_path, return_axis=False):
     full_pose, cam, exp = load_pixie_smplx(smplx_path)
-    
-
 
 
 def main(args):
+    full_pose, exp, cam = load_pixie_smplx(args.smpl_path)
+
+    pose1 = full_pose[150,0:1]
+
+    print(pose1.shape)
+    print(pose1)
+    print('')
+
+    # print('inversion')
+
+    # inv = torch.from_numpy(rot2eul(pose1[0]))
+    inv = test_inversion(pose1)
+    # print(inv)
+
+    inv = batch_euler2axis(inv)
+    inv = batch_rodrigues(inv)
+
+    print(inv)
+    print('')
+    print('')
+
+    print(inv-pose1)
+
+
+
+
+def flame(args):
 
     full_pose, exp, cam = load_pixie_smplx(args.smpl_path)
 

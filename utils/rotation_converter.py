@@ -431,7 +431,14 @@ def batch_matrix2euler(rot_mats):
     # TODO: add x, z
     sy = torch.sqrt(rot_mats[:, 0, 0] * rot_mats[:, 0, 0] +
                     rot_mats[:, 1, 0] * rot_mats[:, 1, 0])
-    return torch.atan2(-rot_mats[:, 2, 0], sy)
+    theta_y = torch.atan2(-rot_mats[:, 2, 0], sy)
+
+    # theta_z = torch.atan2(rot_mats[:, 0, 0]/torch.cos(theta_y), -rot_mats[:, 0, 1]/torch.cos(theta_y))
+    # theta_x = torch.atan2(rot_mats[:, 2, 2]/torch.cos(theta_y), rot_mats[:, 1, 2]/torch.cos(theta_y))
+    theta_z = torch.atan2(rot_mats[:, 1, 0]/torch.cos(theta_y), rot_mats[:, 0, 0]/torch.cos(theta_y))
+    theta_x = torch.atan2(rot_mats[:, 2, 1]/torch.cos(theta_y), rot_mats[:, 2, 2]/torch.cos(theta_y))
+
+    return torch.cat((theta_x, theta_y, theta_z), dim=0)
 
 def batch_matrix2axis(rot_mats):
     return quaternion_to_angle_axis(rotation_matrix_to_quaternion(rot_mats))
@@ -444,10 +451,7 @@ def batch_axis2matrix(theta):
     return quaternion_to_rotation_matrix(angle_axis_to_quaternion(theta))
 
 def batch_axis2euler(theta):
-    return batch_matrix2euler(batch_axis2matrix(theta))
-
-def batch_axis2euler(r):
-    return rot_mat_to_euler(batch_rodrigues(r))
+    raise NotImplementedError
 
 def batch_rodrigues(rot_vecs, epsilon=1e-8, dtype=torch.float32):
     '''  same as batch_matrix2axis
@@ -467,6 +471,7 @@ def batch_rodrigues(rot_vecs, epsilon=1e-8, dtype=torch.float32):
     device = rot_vecs.device
 
     angle = torch.norm(rot_vecs + 1e-8, dim=1, keepdim=True)
+
     rot_dir = rot_vecs / angle
 
     cos = torch.unsqueeze(torch.cos(angle), dim=1)
@@ -483,6 +488,9 @@ def batch_rodrigues(rot_vecs, epsilon=1e-8, dtype=torch.float32):
     ident = torch.eye(3, dtype=dtype, device=device).unsqueeze(dim=0)
     rot_mat = ident + sin * K + (1 - cos) * torch.bmm(K, K)
     return rot_mat
+
+def inverse_batch_rodrigues(rot_vecs, epsilon=1e-8, dtype=torch.float32):
+    raise NotImplementedError
 
 def batch_cont2matrix(module_input):
     ''' Decoder for transforming a latent representation to rotation matrices
