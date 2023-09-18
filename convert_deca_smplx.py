@@ -4,50 +4,14 @@ import torch
 import pickle
 import argparse
 import numpy as np
-from utils import util, rotation_converter, lossfunc
+from utils.rotation_converter import batch_rodrigue, batch_euler2axis
+from utils.load_params import load_pixie_smplx, load_deca_flame
 
-def load_pixie_smplx(actions_file='/home/yfeng/github/SCARF/data/pixie_radioactive.pkl'):
-    # load pixie animation poses
-    assert os.path.exists(actions_file), f'{actions_file} does not exist'
-    with open(actions_file, 'rb') as f:
-        codedict = pickle.load(f)
-    full_pose = torch.from_numpy(codedict['full_pose'])
-    cam = codedict['cam']
-    exp = codedict['exp']
-    return full_pose, exp, cam
+def smplx_to_smpl(smplx_path, return_axis=False):
+    full_pose, cam, exp = load_pixie_smplx(smplx_path)
+    
 
-def batch_rodrigues(rot_vecs, epsilon=1e-8, dtype=torch.float32):
-    ''' Calculates the rotation matrices for a batch of rotation vectors
-        Parameters
-        ----------
-        rot_vecs: torch.tensor Nx3
-            array of N axis-angle vectors
-        Returns
-        -------
-        R: torch.tensor Nx3x3
-            The rotation matrices for the given axis-angle parameters
-    '''
 
-    batch_size = rot_vecs.shape[0]
-    device = rot_vecs.device
-
-    angle = torch.norm(rot_vecs + 1e-8, dim=1, keepdim=True)
-    rot_dir = rot_vecs / angle
-
-    cos = torch.unsqueeze(torch.cos(angle), dim=1)
-    sin = torch.unsqueeze(torch.sin(angle), dim=1)
-
-    # Bx1 arrays
-    rx, ry, rz = torch.split(rot_dir, 1, dim=1)
-    K = torch.zeros((batch_size, 3, 3), dtype=dtype, device=device)
-
-    zeros = torch.zeros((batch_size, 1), dtype=dtype, device=device)
-    K = torch.cat([zeros, -rz, ry, rz, zeros, -rx, -ry, rx, zeros], dim=1) \
-        .view((batch_size, 3, 3))
-
-    ident = torch.eye(3, dtype=dtype, device=device).unsqueeze(dim=0)
-    rot_mat = ident + sin * K + (1 - cos) * torch.bmm(K, K)
-    return rot_mat
 
 def main(args):
 
@@ -71,7 +35,7 @@ def main(args):
 
         posecode = flame.item().get('pose') # 1*3
         euler_jaw_pose = torch.from_numpy(posecode[:,3:])
-        axis_jaw_pose  = rotation_converter.batch_euler2axis(euler_jaw_pose)
+        axis_jaw_pose  = batch_euler2axis(euler_jaw_pose)
         rot_jaw_pose   = batch_rodrigues(axis_jaw_pose)
 
         axis_neck_pose = torch.from_numpy(posecode[:,:3])
