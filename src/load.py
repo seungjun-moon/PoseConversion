@@ -31,16 +31,7 @@ def load_smplx(filepath='examples/smplx.pkl'):
     n_frames = len(full_pose)
     device = full_pose.device
 
-    ## KEY #2 : exp
-
-    if 'exp' in codedict.keys():
-        exp = torch.from_numpy(codedict['exp']).to(device)
-    else:
-        print('exp not in {}. Automatically fill with 0.'.format(filepath))
-        exp = torch.zeros((n_frames, 100)).to(device)
-    assert len(exp) == n_frames, 'length of exp is {}, while number of frames is {}'.format(len(exp, n_frames))
-
-    ## KEY #3 : cam
+    ## KEY #2 : cam
 
     if 'cam' in codedict.keys():
         cam = torch.from_numpy(codedict['cam']).to(device)
@@ -48,6 +39,15 @@ def load_smplx(filepath='examples/smplx.pkl'):
         print('cam not in {}. Automatically fill with 0.'.format(filepath))
         cam = torch.zeros((n_frames, 3)).to(device)
     assert len(cam) == n_frames, 'length of cam is {}, while number of frames is {}'.format(len(cam, n_frames))
+
+    ## KEY #3 : exp
+
+    if 'exp' in codedict.keys():
+        exp = torch.from_numpy(codedict['exp']).to(device)
+    else:
+        print('exp not in {}. Automatically fill with 0.'.format(filepath))
+        exp = torch.zeros((n_frames, 100)).to(device)
+    assert len(exp) == n_frames, 'length of exp is {}, while number of frames is {}'.format(len(exp, n_frames))
 
     ## KEY #4 : shape
 
@@ -57,7 +57,7 @@ def load_smplx(filepath='examples/smplx.pkl'):
         print('shape not in {}. Automatically fill with 0.'.format(filepath))
         shape = torch.zeros((100)).to(device)
 
-    return full_pose, exp, cam, shape
+    return full_pose, cam, exp, shape
 
 def load_smpl(filepath=''):
     raise NotImplementedError
