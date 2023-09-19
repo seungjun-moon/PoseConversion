@@ -6,7 +6,6 @@ import argparse
 import numpy as np
 from utils.rotation_converter import batch_rodrigues, batch_euler2axis, batch_axis2euler, batch_matrix2axis, inverse_batch_rodrigues
 from src.load import load_smplx, load_flame
-from pytorch3d.transforms import matrix_to_euler_angles
 
 def smplx_to_smpl(smplx_path, save=False):
     smplx_pose, cam, exp, shape = load_smplx(smplx_path)

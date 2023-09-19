@@ -1,7 +1,7 @@
 import os
 import pickle
 from utils.rotation_converter import *
-from pytorch3d.transforms import matrix_to_euler_angles
+from pytorch3d.transforms import matrix_to_euler_angles, matrix_to_axis_angle
 
 def pickle_dump(loadout, file):
     '''
@@ -33,3 +33,11 @@ def batch_matrix2euler(pose):
     Output : Pose Tensor [N * J * 3]
     '''
     return matrix_to_euler_angles(pose, convention="XYZ")
+
+def batch_matrix2axis(pose):
+    '''
+    Input : Pose Tensor [N * J * 3 * 3]
+
+    Output : Pose Tensor [N * J * 3]
+    '''
+    return matrix_to_axis_angle(pose)
