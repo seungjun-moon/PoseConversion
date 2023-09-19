@@ -59,5 +59,8 @@ def load_smplx(filepath='examples/smplx.pkl'):
 
     return full_pose, exp, cam, shape
 
+def load_smpl(filepath=''):
+    raise NotImplementedError
+
 def load_flame(filepath=''):
     raise NotImplementedError

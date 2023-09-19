@@ -4,18 +4,17 @@ import torch
 import pickle
 import argparse
 import numpy as np
-from utils.common import pickle_dump
-from utils.rotation_converter import batch_rodrigues, batch_euler2axis, batch_axis2euler, batch_matrix2axis, inverse_batch_rodrigues
-from utils.load_params import load_smplx, load_flame
-from pytorch3d.transforms import matrix_to_euler_angles
+from utils.common import pickle_dump, batch_euler2matrix, batch_matrix2euler
 
 # Refine to fit each module's output. Cannot load directly from .pkl dictionary. Utilize functions in load.py
 
-def smplx_for_SCARF(smplx):
+def smplx_for_SCARF(smplx, save_path):
     raise NotImplementedError
 
-def smpl_for_HOOD(smpl):
+def smpl_for_HOOD(smpl, save_path):
     assert len(smpl) == 4 # pose, cam, exp, shape
+
+    pose, cam, exp, shape = smpl
 
     out_dict = dict()
 
@@ -25,17 +24,27 @@ def smpl_for_HOOD(smpl):
 
     ## KEY #2 : body_pose
 
-    rot_mats = pose[:,1:]
-    rot_axis = torch.empty((rot_mats.shape[0],(rot_mats.shape[1]-1)*3)) # -1 for excluding global_rotation
-
-    for i in range(len(rot_mats)):
-        rot_axis[i] = matrix_to_euler_angles(rot_mats[i], convention="XYZ")
+    rot_mats = pose[:, 1:]
+    rot_axis = batch_matrix2euler(rot_mats)
 
     out_dict['body_pose'] = rot_axis
 
-    ## KEY #2 : global_orient
+    ## KEY #3 : global_orient
 
-    rot_mats = pose[:,0]
+    grot_mats = pose[:,0]
+    grot_axis = batch_matrix2euler(grot_mats)
+
+    out_dict['global_orient'] = grot_axis
+
+    ## KEY #4 : betas
+
+    out_dict['betas'] = shape[:10]
+
+    os.makedirs(os.path.dirname(save_path), exist_ok=True)
+    pickle_dump(out_dict, save_path)
+
+    return out_dict
+
 
 
 
