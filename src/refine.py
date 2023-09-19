@@ -27,6 +27,8 @@ def smpl_for_HOOD(smpl, save_path):
     rot_mats = pose[:, 1:]
     rot_axis = batch_matrix2euler(rot_mats)
 
+    rot_axis = torch.reshape(rot_axis.shape[0], -1)
+
     out_dict['body_pose'] = rot_axis
 
     ## KEY #3 : global_orient
@@ -41,6 +43,10 @@ def smpl_for_HOOD(smpl, save_path):
     out_dict['betas'] = shape[:10]
 
     os.makedirs(os.path.dirname(save_path), exist_ok=True)
+
+    for key in out_dict.keys():
+        print(out_dict[key].shape)
+
     print('Save SMPL for HOOD in {}'.format(save_path))
     pickle_dump(out_dict, save_path)
 
