@@ -50,7 +50,7 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--load_path', type=str, default='/home/june1212/PoseConversion/examples/smplx.pkl', help='original pose path')
-    parser.add_argument('--save_path', type=str, default='/home/june1212/scarflame/examples', help='save path')
+    parser.add_argument('--save_path', type=str, default='/home/june1212/PoseConversion/examples', help='save path')
     parser.add_argument('--load_source', type=str, default='smplx', choices=['smpl','smplx','flame'], help='loaded data source')
     parser.add_argument('--module', type=str, default='hood', choices=['hood','scarf','next3d'], help='data usage')
     args = parser.parse_args()

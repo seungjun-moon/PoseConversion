@@ -41,6 +41,7 @@ def smpl_for_HOOD(smpl, save_path):
     out_dict['betas'] = shape[:10]
 
     os.makedirs(os.path.dirname(save_path), exist_ok=True)
+    print('Save SMPL for HOOD in {}'.format(save_path))
     pickle_dump(out_dict, save_path)
 
     return out_dict
