@@ -10,12 +10,12 @@ Currently supports the conversion for the module [SCARF](https://github.com/yfen
 
 ***
 
-### Example #1: From PIXIE(SMPL-X) to HOOD.
+### Example #1: From PIXIE(SMPL-X) output to HOOD(SMPL) input.
 ```.bash
 python main.py --load_path ./examples/smplx.pkl --save_path ./examples/ --load_source smplx --module hood
 ```
 
-### Example #2: Combine DECA(FLAME) with PIXIE(SMPL-X).
+### Example #2: Combine DECA(FLAME) output with PIXIE(SMPL-X) output.
 ```.bash
 python preprocess.py --raw_path /your/path/to/deca_results/ --save_path /your/path/to/save_results/ --load_source smplx --module hood
 ```
