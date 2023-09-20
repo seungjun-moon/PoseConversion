@@ -8,8 +8,6 @@ Currently supports the conversion for the module [SCARF](https://github.com/yfen
 
 ## Converting Pose parameters
 
-***
-
 ### Example #1: From PIXIE(SMPL-X) output to HOOD(SMPL) input.
 ```.bash
 python main.py --load_path ./examples/smplx.pkl --save_path ./examples/ --load_source smplx --module hood
