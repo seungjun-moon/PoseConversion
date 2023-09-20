@@ -39,17 +39,18 @@ def flame_from_next3d(deca_path):
 
     full_pose = batch_euler2matrix(full_pose)
 
+    return full_pose, cam, exp, shape
+
+def main(args):
+    full_pose, cam, exp, shape = flame_from_next3d(args.raw_path)
+    os.makedirs(os.path.dirname(args.save_path), exist_ok=True)
+
     flame_dict = {}
     flame_dict['full_pose'] = full_pose.numpy() # N * 4 * 3 * 3
     flame_dict['cam'] = cam.numpy() # N * 3
-    flame_dict['shape'] = shape.numpy() # N * 100
     flame_dict['exp'] = exp.numpy() # N * 50
+    flame_dict['shape'] = shape.numpy() # N * 100
 
-    return flame_dict
-
-def main(args):
-    flame_dict = flame_from_next3d(args.raw_path)
-    os.makedirs(os.path.dirname(args.save_path), exist_ok=True)
     save_pkl(os.path.join(args.save_path, 'flame.pkl'), flame_dict)
 
 if __name__ == '__main__':

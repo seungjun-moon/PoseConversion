@@ -53,3 +53,23 @@ def save_pkl(savepath, params, ind=0):
     # import ipdb; ipdb.set_trace()
     with open(savepath, 'wb') as f:
         pickle.dump(out_data, f, protocol=2)
+
+
+def fit_pose_length(element, length):
+    '''
+    Fit element length without discontinuity, to the number of length. 
+    '''
+
+    element_concat = element
+    element_flip = torch.flip(element, dims=[0])
+
+    mul = length // len(element)
+
+    for i in range(1,mul+1):
+        if i % 2 == 1:
+            element_concat = torch.cat((element_concat, element_flip[1:]), dim=0)
+        else:
+            element_concat = torch.cat((element_concat, element[1:]), dim=0)
+
+    return element_concat[:length]
+
