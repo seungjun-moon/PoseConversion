@@ -5,8 +5,8 @@ import pickle
 import argparse
 import numpy as np
 from src.load import load_pickle
-from utils.common import fit_pose_length, save_pkl
-from pytorch3d.transforms import matrix_to_euler_angles
+from utils.common import fit_pose_length, save_pkl, batch_euler2matrix
+
 
 def add_smpl_flame(smpl, flame, pivot='face'):
     raise NotImplementedError
@@ -35,18 +35,22 @@ def add_smplx_flame(smplx, flame, pivot='face'):
     pose1[:,15] = pose2[:,0] # FLAME neck_pose --> SMPL-X head pose
     pose1[:,22] = pose2[:,1] # FLAME jaw_pose  --> SMPL-X jaw pose
 
-    id_matrix = torch.FloatTensor([[ 1.0, -0.0,  0.0],
+    # TODO : As of now, fix to the identity
+
+    gpose_matrix = torch.FloatTensor([[ 1.0, -0.0,  0.0],
                                    [-0.0, -1.0,  0.0],
                                    [ 0.0, -0.0, -1.0]])
 
-    id_matrices = id_matrix.repeat(length,1,1)
+    gpose_matrices = gpose_matrix.repeat(length,1,1)
 
-    # TODO : As of now, fix to the identity
+    pose1[:,0] = gpose_matrices
 
-    pose1[:,3] = id_matrices
-    pose1[:,6] = id_matrices
-    pose1[:,9] = id_matrices
-    pose1[:,12] = id_matrices
+    id_poses = batch_euler2matrix(torch.zeros((length,1,3))).squeeze(1)
+
+    pose1[:,3] = id_poses
+    pose1[:,6] = id_poses
+    pose1[:,9] = id_poses
+    pose1[:,12] = id_poses
 
     return pose1, cam1, exp1, shape1
 

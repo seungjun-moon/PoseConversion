@@ -26,13 +26,13 @@ def flame_from_next3d(deca_path):
         expcode   = flame.item().get('exp') # 1*50
         eye_posecode = flame.item().get('eye_pose') # 1*6
 
-        euler_jaw_pose = torch.from_numpy(posecode[:,3:])
         euler_neck_pose = torch.from_numpy(posecode[:,:3])
-
+        euler_jaw_pose  = torch.from_numpy(posecode[:,3:])
+        
         euler_eye_pose_1 = torch.from_numpy(eye_posecode[:,:3])
         euler_eye_pose_2 = torch.from_numpy(eye_posecode[:,3:])
 
-        full_pose[i] = torch.cat((euler_jaw_pose, euler_neck_pose, euler_eye_pose_1, euler_eye_pose_2), dim=0)
+        full_pose[i] = torch.cat((euler_neck_pose, euler_jaw_pose, euler_eye_pose_1, euler_eye_pose_2), dim=0)
         cam[i] = torch.from_numpy(camcode)
         shape[i] = torch.from_numpy(shapecode)
         exp[i] = torch.from_numpy(expcode)
