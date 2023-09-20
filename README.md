@@ -6,16 +6,16 @@ Currently supports the extraction from the module [PIXIE](https://github.com/yfe
 
 Currently supports the conversion for the module [SCARF](https://github.com/yfeng95/SCARF), [HOOD](https://github.com/dolorousrtur/hood).
 
-### Converting Pose parameters
+## Converting Pose parameters
 
 ***
 
-#### Example #1: From PIXIE(SMPL-X) to HOOD.
+### Example #1: From PIXIE(SMPL-X) to HOOD.
 ```.bash
 python main.py --load_path ./examples/smplx.pkl --save_path ./examples/ --load_source smplx --module hood
 ```
 
-#### Example #2: Combine DECA(FLAME) with PIXIE(SMPL-X).
+### Example #2: Combine DECA(FLAME) with PIXIE(SMPL-X).
 ```.bash
 python preprocess.py --raw_path /your/path/to/deca_results/ --save_path /your/path/to/save_results/ --load_source smplx --module hood
 ```
