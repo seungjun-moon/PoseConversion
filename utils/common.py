@@ -1,16 +1,8 @@
 import os
+import torch
 import pickle
 from utils.rotation_converter import *
 from pytorch3d.transforms import matrix_to_euler_angles, matrix_to_axis_angle
-
-def pickle_dump(loadout, file):
-    '''
-    Dump a pickle file. Create the directory if it does not exist.
-    '''
-    os.makedirs(os.path.dirname(str(file)), exist_ok=True)
-
-    with open(file, 'wb') as f:
-        pickle.dump(loadout, f)
 
 def batch_euler2matrix(pose):
     '''
@@ -41,3 +33,23 @@ def batch_matrix2axis(pose):
     Output : Pose Tensor [N * J * 3]
     '''
     return matrix_to_axis_angle(pose)
+
+def pickle_dump(loadout, file):
+    '''
+    Dump a pickle file. Create the directory if it does not exist.
+    '''
+    os.makedirs(os.path.dirname(str(file)), exist_ok=True)
+
+    with open(file, 'wb') as f:
+        pickle.dump(loadout, f)
+
+def save_pkl(savepath, params, ind=0):
+    out_data = {}
+    for k, v in params.items():
+        if torch.is_tensor(v):
+            out_data[k] = v[ind].detach().cpu().numpy()
+        else:
+            out_data[k] = v
+    # import ipdb; ipdb.set_trace()
+    with open(savepath, 'wb') as f:
+        pickle.dump(out_data, f, protocol=2)

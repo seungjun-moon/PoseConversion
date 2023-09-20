@@ -24,23 +24,9 @@ def smpl_for_HOOD(smpl, save_path):
 
     ## KEY #2 : body_pose
 
-    rot_mats = pose[:, 1:]
-
+    rot_mats = pose[:, 1:] # exclude global orientations
     rot_axis = batch_matrix2axis(rot_mats)
-
-
-    ### TODO
-
-    # print(rot_mats[0,0])
-    # from smplx.lbs import batch_rodrigues
-    # print(rot_axis.shape)
-    # new_rot_mats = batch_rodrigues(rot_axis[0])
-    # print(new_rot_mats[0])
-
     rot_axis = rot_axis.reshape(rot_axis.shape[0], -1)
-
-    # rot_axis[:,18*3:19*3]=0 #TODO : joint #18 becomes zero. --> related to right elbow.
-    # rot_axis[:,19*3:20*3]=0 #TODO : joint #19 becomes zero.
 
     out_dict['body_pose'] = rot_axis
 
@@ -51,8 +37,6 @@ def smpl_for_HOOD(smpl, save_path):
 
     ## TODO: Alignment between PIXIE and HOOD are different.
     grot_axis = torch.zeros(grot_axis.shape)
-
-
     out_dict['global_orient'] = grot_axis
 
     ## KEY #4 : betas

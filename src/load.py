@@ -7,17 +7,15 @@ N_SHAPE=100
 
 
 '''
-
 Default Input Format : .pkl dictionary, consists of ['full_pose','shape','exp','cam']
 
 full_pose : N * joints * 3 (or 3*3)
 shape : 100
 exp : N * coeff
 cam : N * 3 (for the orthographic)
-
 '''
 
-def load_smplx(filepath='examples/smplx.pkl'):
+def load_pickle(filepath):
     # load pixie animation poses
     assert os.path.exists(filepath), f'{filepath} does not exist'
     with open(filepath, 'rb') as f:
@@ -58,9 +56,3 @@ def load_smplx(filepath='examples/smplx.pkl'):
         shape = torch.zeros((100)).to(device)
 
     return full_pose, cam, exp, shape
-
-def load_smpl(filepath=''):
-    raise NotImplementedError
-
-def load_flame(filepath=''):
-    raise NotImplementedError

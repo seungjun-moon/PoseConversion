@@ -6,7 +6,7 @@ import argparse
 import numpy as np
 from pytorch3d.transforms import matrix_to_euler_angles
 
-from src.load import load_smplx, load_smpl, load_flame
+from src.load import load_pickle
 from src.convert import *
 from src.refine import *
 
@@ -22,24 +22,20 @@ def main(args):
 
     data_dict = module_data_dict()
 
-    if args.load_source == 'smpl' and data_dict[args.module] == 'smpl':
-        data = load_smpl(args.load_path)
+    if args.load_source == data_dict[args.module]:
+        data = load_pickle(args.load_path)
     elif args.load_source == 'smpl' and data_dict[args.module] == 'smplx':
         data = smpl_to_smplx(args.load_path)
     elif args.load_source == 'smpl' and data_dict[args.module] == 'flame':
         data = smpl_to_flame(args.load_path)
     elif args.load_source == 'smplx' and data_dict[args.module] == 'smpl':
         data = smplx_to_smpl(args.load_path)
-    elif args.load_source == 'smplx' and data_dict[args.module] == 'smplx':
-        data = load_smplx(args.load_path)
     elif args.load_source == 'smplx' and data_dict[args.module] == 'flame':
         data = smplx_to_flame(args.load_path)
     elif args.load_source == 'flame' and data_dict[args.module] == 'smpl':
         data = flame_to_smpl(args.load_path)
     elif args.load_source == 'flame' and data_dict[args.module] == 'smplx':
         data = flame_to_smplx(args.load_path)
-    elif args.load_source == 'flame' and data_dict[args.module] == 'flame':
-        data = load_flame(args.load_path)
 
     if args.module == 'scarf':
         smplx_for_SCARF(data, args.save_path)
