@@ -10,7 +10,6 @@ from src.load import load_smplx, load_smpl, load_flame
 from src.convert import *
 from src.refine import *
 
-
 def module_data_dict():
     data_dict = {}
     data_dict['hood']='smpl'
