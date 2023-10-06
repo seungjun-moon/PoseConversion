@@ -8,7 +8,7 @@ Currently supports the conversion for the module [SCARF](https://github.com/yfen
 
 ## Preprocessing Raw Data From Existing Models
 
-### Example: From raw DECA (in Next3D) output to pickle dictionary.
+### Example: From raw DECA(in Next3D) output to pickle dictionary.
 ```.bash
 python preprocess.py --raw_path /your/path/to/deca_results/ \
 	--save_path /your/path/to/save_results/
@@ -33,3 +33,9 @@ python main.py --load_path ./examples/smplx.pkl \
 	--load_source smplx --module hood
 ```
 
+### Example #2: From PIXIE(SMPL-X) output to HOOD2(SMPL-X) input.
+```.bash
+python main.py --load_path ./examples/smplx.pkl \
+	--save_path ./examples/ \
+	--load_source smplx --module hood2
+```
