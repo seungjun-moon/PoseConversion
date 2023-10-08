@@ -39,3 +39,12 @@ python main.py --load_path ./examples/smplx.pkl \
 	--save_path ./examples/ \
 	--load_source smplx --module hood2
 ```
+
+***
+
+## Visualization
+
+```.bash
+python visualize.py --load_path ./examples/smplx.pkl \
+	--model_folder /home/june1212/scarf/data/SMPLX_NEUTRAL_2020.npz
+```
