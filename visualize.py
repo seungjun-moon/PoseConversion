@@ -97,6 +97,24 @@ def main(args,
                 geometry.append(joints_pcl)
 
             o3d.visualization.draw_geometries(geometry)
+        elif args.plotting_module == 'pytorch3d':
+            import open3d as o3d
+
+            mesh = o3d.geometry.TriangleMesh()
+            mesh.vertices = o3d.utility.Vector3dVector(
+                vertices)
+            mesh.triangles = o3d.utility.Vector3iVector(model.faces)
+            mesh.compute_vertex_normals()
+            mesh.paint_uniform_color([0.3, 0.3, 0.3])
+
+            geometry = [mesh]
+            if plot_joints:
+                joints_pcl = o3d.geometry.PointCloud()
+                joints_pcl.points = o3d.utility.Vector3dVector(joints)
+                joints_pcl.paint_uniform_color([0.7, 0.3, 0.3])
+                geometry.append(joints_pcl)
+
+            o3d.visualization.draw_geometries(geometry)
         else:
             raise ValueError('Unknown plotting_module: {}'.format(plotting_module))
 
@@ -111,7 +129,7 @@ if __name__ == '__main__':
     parser.add_argument('--load_path', default='./examples/smplx.pkl', type=str,
                         help='The path for the target pose sequence dictionary')
     parser.add_argument('--plotting_module', default='open3d', type=str,
-                        choices=['pyrender', 'matplotlib', 'open3d'],
+                        choices=['pyrender', 'matplotlib', 'open3d', 'pytorch3d'],
                         help='Tool for the visualization')
     args = parser.parse_args()
     main(args)
