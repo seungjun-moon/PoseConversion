@@ -59,6 +59,7 @@ def main(args,
                 scene.add(joints_pcl)
 
             pyrender.Viewer(scene, use_raymond_lighting=True)
+
         elif args.plotting_module == 'matplotlib':
             from matplotlib import pyplot as plt
             from mpl_toolkits.mplot3d import Axes3D
@@ -78,6 +79,7 @@ def main(args,
             if plot_joints:
                 ax.scatter(joints[:, 0], joints[:, 1], joints[:, 2], alpha=0.1)
             plt.show()
+
         elif args.plotting_module == 'open3d':
             import open3d as o3d
 
@@ -96,18 +98,66 @@ def main(args,
                 geometry.append(joints_pcl)
 
             o3d.visualization.draw_geometries(geometry)
+
         elif args.plotting_module == 'pytorch3d':
+
+            device = 'cuda'
+
+            import cv2
             import pytorch3d
-            from src.rendering import Pytorch3dRasterzier
+            from pytorch3d.structures import Meshes, join_meshes_as_scene
+            from pytorch3d.renderer import (
+                look_at_view_transform,
+                FoVPerspectiveCameras, 
+                PointLights, 
+                DirectionalLights, 
+                Materials, 
+                RasterizationSettings, 
+                MeshRenderer, 
+                MeshRasterizer,  
+                SoftPhongShader,
+                TexturesUV,
+                TexturesVertex
+            )
+            from pytorch3d.io import load_obj, load_objs_as_meshes
+            from pytorch3d.renderer.mesh.textures import Textures
 
-            renderer = Pytorch3dRasterzier(device='cuda')
-            vis_dict={
-            'image' : renderer(vertices)
-            }
+            R, T = look_at_view_transform(3, 0, 0)
+            T[0,0] = T[0,0]
+            T[0,1] = T[0,1]
+            cameras = FoVPerspectiveCameras(device=device, R=R, T=T)
 
-            visualize_grid(vis_dict, os.path.join(args.save_path, '{}.png'.format(str(i).zfill(4))))
+            raster_settings = RasterizationSettings(
+                image_size=1024, 
+                blur_radius=0.0, 
+                faces_per_pixel=1,
+            )
+            lights = PointLights(device=device, location=[[0.0, 0.0, +3.0]])
+            renderer = MeshRenderer(
+                rasterizer=MeshRasterizer(
+                    cameras=cameras, 
+                    raster_settings=raster_settings
+                ),
+                shader=SoftPhongShader(
+                    device=device, 
+                    cameras=cameras,
+                    lights=lights
+                )
+            )
 
-            ### fill in here ###
+            verts = torch.from_numpy(vertices).unsqueeze(0).to(device)
+            faces = torch.from_numpy(model.faces.astype(np.int64)).unsqueeze(0).to(device)
+
+            verts_rgb = torch.zeros_like(verts) # (1, V, 3)
+            textures = Textures(verts_rgb=verts_rgb.to(device))
+            
+            mesh = Meshes(verts = verts,
+                          faces = faces,
+                          textures=textures)
+
+            image = renderer(mesh)
+            image = 255*image[0, ..., :3].cpu().numpy()
+            cv2.imwrite(os.path.join(args.save_path, '{}.png'.format(str(i).zfill(4))), image)
 
 
 
