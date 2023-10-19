@@ -97,6 +97,7 @@ def main(args,
 
             o3d.visualization.draw_geometries(geometry)
         elif args.plotting_module == 'pytorch3d':
+            import pytorch3d
             from src.rendering import Pytorch3dRasterzier
 
             renderer = Pytorch3dRasterzier(device='cuda')
