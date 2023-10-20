@@ -7,10 +7,12 @@ import numpy as np
 
 from src.load import load_pickle
 from utils.util import visualize_grid
+from utils.common import batch_matrix2euler
 
 def main(args,
          ext='npz',
          gender='neutral',
+         model_type='smplx',
          plot_joints=False,
          sample_shape=True,
          sample_expression=True,
@@ -19,6 +21,18 @@ def main(args,
          use_face_contour=False):
 
     full_pose, _, exp, shape = load_pickle(args.load_path)
+    full_pose = batch_matrix2euler(full_pose).reshape(full_pose.shape[0], -1)
+    
+    if args.model_type == 'smplx':
+        global_orient = full_pose[:,:3]
+        body_pose = full_pose[:,3:]
+        part_body_pose = body_pose[:,:21*3]
+        jaw_pose = body_pose[:,21*3:22*3]
+        leye_pose = body_pose[:,22*3:23*3]
+        reye_pose = body_pose[:,23*3:24*3]
+        left_hand_pose = body_pose[:,24*3:39*3]
+        right_hand_pose = body_pose[:,39*3:54*3]
+
     num_betas = shape.shape[-1]
 
     model = smplx.create(args.model_folder, model_type=args.model_type,
@@ -29,8 +43,18 @@ def main(args,
     os.makedirs(args.save_path, exist_ok=True)
 
     for i in range(full_pose.shape[0]):
-        output = model(betas=shape.unsqueeze(0), expression=exp[i].unsqueeze(0),
-                       return_verts=True)
+        if args.model_type == 'smpl':
+            output = model(betas=shape.unsqueeze(0), expression=exp[i].unsqueeze(0),
+                           return_verts=True)
+        elif args.model_type == 'smplx':
+            print(global_orient.shape[i:i+1])
+            print(shape.unsqueeze(0).shape)
+            output = model(betas=shape.unsqueeze(0), expression=exp[i].unsqueeze(0), global_orient=global_orient[i:i+1], \
+                           body_pose=part_body_pose[i:i+1], jaw_pose=jaw_pose[i:i+1], leye_pose=leye_pose[i:i+1], \
+                           reye_pose=reye_pose[i:i+1], left_hand_pose=left_hand_pose[i:i+1], right_hand_pose=right_hand_pose[i:i+1])
+        elif args.model_type == 'flame':
+            raise NotImplementedError
+
         vertices = output.vertices.detach().cpu().numpy().squeeze()
         joints = output.joints.detach().cpu().numpy().squeeze()
 
@@ -148,7 +172,7 @@ def main(args,
             verts = torch.from_numpy(vertices).unsqueeze(0).to(device)
             faces = torch.from_numpy(model.faces.astype(np.int64)).unsqueeze(0).to(device)
 
-            verts_rgb = torch.zeros_like(verts) # (1, V, 3)
+            verts_rgb = torch.full(verts, 0.5)
             textures = Textures(verts_rgb=verts_rgb.to(device))
             
             mesh = Meshes(verts = verts,
