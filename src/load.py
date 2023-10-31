@@ -1,4 +1,5 @@
 import os
+import json
 import pickle
 import torch
 import numpy as np
@@ -53,3 +54,16 @@ def load_pickle(filepath):
         shape = torch.zeros((100)).to(device)
 
     return full_pose, cam, exp, shape
+
+'''
+Default Input Format : .json dictionary, only for the BlendShape
+
+full_param : N * 52
+'''
+
+def load_json(blendshape_path):
+    f = open(blendshape_path)
+    blendshape = json.load(f)
+    coeffs = torch.from_numpy(np.asarray(blendshape['weightMat'])) # N * 52
+
+    return coeffs

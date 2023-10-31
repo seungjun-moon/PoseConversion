@@ -94,3 +94,21 @@ def smplx_for_HOOD2(smplx, save_path):
     pickle_dump(out_dict, save_path)
 
     return out_dict
+
+def flame_for_NEXT3D(flame, save_path):
+    pose, cam, exp, shape = flame
+
+    out_dict = dict()
+
+    out_dict['cam']  = cam
+    out_dict['pose'] = pose
+    out_dict['exp']  = exp
+    out_dict['shape']= shape
+
+    os.makedirs(os.path.dirname(save_path), exist_ok=True)
+    print('Save FLAME for Next3D in {}'.format(save_path))
+    pickle_dump(out_dict, save_path)
+
+    return out_dict
+
+

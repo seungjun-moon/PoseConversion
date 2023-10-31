@@ -39,6 +39,14 @@ python main.py --load_path ./examples/smplx.pkl \
 	--load_source smplx --module hood2
 ```
 
+#### Example #3: From BLENDSHAPE output to Next3D input.
+```.bash
+python main.py --load_path ./examples/a2f_export_bsweight.json \
+	--save_path ./examples/ \
+	--load_source blendshape --module next3d
+```
+
+
 ***
 
 ## Visualization
