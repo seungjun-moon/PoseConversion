@@ -3,9 +3,6 @@ import pickle
 import torch
 import numpy as np
 
-N_SHAPE=100
-
-
 '''
 Default Input Format : .pkl dictionary, consists of ['full_pose','shape','exp','cam']
 
