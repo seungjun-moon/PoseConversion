@@ -100,10 +100,10 @@ def flame_for_NEXT3D(flame, save_path):
 
     out_dict = dict()
 
-    out_dict['cam']  = cam
-    out_dict['pose'] = pose
-    out_dict['exp']  = exp
-    out_dict['shape']= shape
+    out_dict['cam']  = cam.numpy()
+    out_dict['full_pose'] = pose.numpy()
+    out_dict['exp']  = exp.numpy()
+    out_dict['shape']= shape.numpy()
 
     os.makedirs(os.path.dirname(save_path), exist_ok=True)
     print('Save FLAME for Next3D in {}'.format(save_path))
