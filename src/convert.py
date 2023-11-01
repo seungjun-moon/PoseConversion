@@ -53,7 +53,10 @@ def blendshape_to_flame(blendshape_path):
     exp   = torch.zeros(coeffs.shape[0],  50)
     cam   = torch.zeros(coeffs.shape[0],   3)
 
-    flame_pose[:,3] = coeffs[:,17]/2
+    flame_pose[:,3] = coeffs[:,17]/2 + coeffs[:,19]/2
+    flame_pose[:,3] = torch.clamp(flame_pose[:,3], max=0.2)
+
+    exp[:,1] = coeffs[:,19]*10 - 0.2
 
     return flame_pose, cam, exp, shape
 
