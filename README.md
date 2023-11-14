@@ -4,7 +4,7 @@ Parameteric pose conversion between SMPL, SMPL-X, and FLAME.
 
 Currently supports the extraction from the module [PIXIE](https://github.com/yfeng95/PIXIE), [DECA](https://github.com/yfeng95/DECA).
 
-Currently supports the conversion for the module [SCARF](https://github.com/yfeng95/SCARF), [HOOD](https://github.com/dolorousrtur/hood).
+Currently supports the conversion for the module [SCARF](https://github.com/yfeng95/SCARF), [HOOD](https://github.com/dolorousrtur/hood), and [Next3D](https://github.com/MrTornado24/Next3D).
 
 ## Preprocessing Raw Data From Existing Models
 
