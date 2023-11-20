@@ -20,9 +20,21 @@ def main(args,
          plotting_module='pyrender',
          use_face_contour=False):
 
-    full_pose, _, exp, shape = load_pickle(args.load_path)
-    full_pose = batch_matrix2euler(full_pose).reshape(full_pose.shape[0], -1)
-    
+    os.makedirs(args.save_path, exist_ok=True)
+
+    if args.model_type != 'mesh':
+        full_pose, _, exp, shape = load_pickle(args.load_path)
+        full_pose = batch_matrix2euler(full_pose).reshape(full_pose.shape[0], -1)
+        num_frames = full_pose.shape[0]
+
+    else: #mesh
+        mesh_list = []
+        for file in os.listdir(args.load_path):
+            if file.endswith('.obj'):
+                mesh_list.append(file)
+        num_frames = len(mesh_list)
+
+
     if args.model_type == 'smplx':
         global_orient = full_pose[:,:3]
         body_pose = full_pose[:,3:]
@@ -33,34 +45,35 @@ def main(args,
         left_hand_pose = body_pose[:,24*3:39*3]
         right_hand_pose = body_pose[:,39*3:54*3]
 
-    num_betas = shape.shape[-1]
+    if args.model_type in ['smplx', 'smpl']:
 
-    model = smplx.create(args.model_folder, model_type=args.model_type,
-                         gender=gender, use_face_contour=use_face_contour,
-                         num_betas=num_betas,
-                         num_expression_coeffs=num_expression_coeffs,
-                         ext=ext)
-    os.makedirs(args.save_path, exist_ok=True)
+        num_betas = shape.shape[-1]
 
-    for i in range(full_pose.shape[0]):
+        model = smplx.create(args.model_folder, model_type=args.model_type,
+                             gender=gender, use_face_contour=use_face_contour,
+                             num_betas=num_betas,
+                             num_expression_coeffs=num_expression_coeffs,
+                             ext=ext)
+
+    for i in range(num_frames):
         if args.model_type == 'smpl':
             output = model(betas=shape.unsqueeze(0), expression=exp[i].unsqueeze(0),
                            return_verts=True)
+            vertices = output.vertices.detach().cpu().numpy().squeeze()
+            # joints = output.joints.detach().cpu().numpy().squeeze()
         elif args.model_type == 'smplx':
             print(global_orient.shape[i:i+1])
             print(shape.unsqueeze(0).shape)
             output = model(betas=shape.unsqueeze(0), expression=exp[i].unsqueeze(0), global_orient=global_orient[i:i+1], \
                            body_pose=part_body_pose[i:i+1], jaw_pose=jaw_pose[i:i+1], leye_pose=leye_pose[i:i+1], \
                            reye_pose=reye_pose[i:i+1], left_hand_pose=left_hand_pose[i:i+1], right_hand_pose=right_hand_pose[i:i+1])
+            vertices = output.vertices.detach().cpu().numpy().squeeze()
+            # joints = output.joints.detach().cpu().numpy().squeeze()
         elif args.model_type == 'flame':
             raise NotImplementedError
+        elif args.model_type == 'mesh':
+            meshfile = open(os.path.join(args.load_path, mesh_list[i]))
 
-        vertices = output.vertices.detach().cpu().numpy().squeeze()
-        joints = output.joints.detach().cpu().numpy().squeeze()
-
-        if i==0:
-            print('Vertices shape =', vertices.shape)
-            print('Joints shape =', joints.shape)
 
         if args.plotting_module == 'pyrender':
             import pyrender
