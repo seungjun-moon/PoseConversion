@@ -87,9 +87,6 @@ def smplx_for_HOOD2(smplx, save_path):
 
     os.makedirs(os.path.dirname(save_path), exist_ok=True)
 
-    # for key in out_dict.keys():
-    #     print(out_dict[key].shape)
-
     print('Save SMPLX for HOOD2 in {}'.format(save_path))
     pickle_dump(out_dict, save_path)
 

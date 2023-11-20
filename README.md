@@ -40,6 +40,7 @@ python main.py --load_path ./examples/smplx.pkl \
 ```
 
 #### Example #3: From BLENDSHAPE output to Next3D input.
+Currently we don't have standard output shape for BLENDSHAPE. This repo utilizes the example JSON file in ./examples.
 ```.bash
 python main.py --load_path ./examples/a2f_export_bsweight.json \
 	--save_path ./examples/ \
