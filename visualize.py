@@ -30,6 +30,7 @@ def main(args,
         for file in os.listdir(args.load_path):
             if file.endswith('.obj'):
                 mesh_list.append(file)
+        mesh_list = sorted(mesh_list)
         num_frames = len(mesh_list)
 
     if args.model_type == 'smplx':
