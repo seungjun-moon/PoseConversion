@@ -4,16 +4,18 @@ import pickle
 import torch
 import numpy as np
 
-'''
-Default Input Format : .pkl dictionary, consists of ['full_pose','shape','exp','cam']
-
-full_pose : N * joints * 3 (or 3*3)
-shape : 100
-exp : N * coeff
-cam : N * 3 (for the orthographic)
-'''
 
 def load_pickle(filepath):
+
+    '''
+    Default Input Format : .pkl dictionary, consists of ['full_pose','shape','exp','cam']
+
+    full_pose : N * joints * 3 (or 3*3)
+    shape : 100
+    exp : N * coeff
+    cam : N * 3 (for the orthographic)
+    '''
+
     # load pixie animation poses
     assert os.path.exists(filepath), f'{filepath} does not exist'
     with open(filepath, 'rb') as f:
@@ -55,15 +57,52 @@ def load_pickle(filepath):
 
     return full_pose, cam, exp, shape
 
-'''
-Default Input Format : .json dictionary, only for the BlendShape
 
-full_param : N * 52
-'''
 
 def load_json(blendshape_path):
+    '''
+    Input: .json dictionary path, only for the BlendShape
+    Output: N * 52
+    '''
     f = open(blendshape_path)
     blendshape = json.load(f)
     coeffs = torch.from_numpy(np.asarray(blendshape['weightMat'])) # N * 52
 
     return coeffs
+
+
+
+def load_obj(obj_path):
+    '''
+    Input : .obj file path.
+    Output: V * 3 vertex
+            F * 3 face
+    '''
+
+    v_array = np.zeros((1,3))
+    f_array = np.zeros((1,3))
+
+    with open(obj_path) as f:
+        for line in f:
+            els = line.split()
+            if len(els) == 0:
+                continue
+            elif els[0] == 'v':
+                float1, float2, float3 = float(els[1]), float(els[2]), float(els[3])
+                try:
+                    v_array = np.concatenate((v_array, np.array([[float1, float2, float3]])), axis=0)
+                except:
+                    v_array[0] = np.array([float1, float2, float3])
+
+            elif els[0] == 'f':
+                try: # f v1 v2 v3
+                    int1, int2, int3 = int(els[1]), int(els[2]), int(els[3])
+                except: # f v1/v2 v2/v3 v3/v1
+                    int1, int2, int3 = int(els[1].split('/')[0]), int(els[2].split('/')[0]), int(els[3].split('/')[0])
+                try:
+                    f_array = np.concatenate((f_array, np.array([[int1, int2, int3]])), axis=0)
+                except:
+                    f_array[0] = np.array([int1, int2, int3])
+
+    return v_array, f_array
+

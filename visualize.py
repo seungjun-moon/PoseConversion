@@ -4,20 +4,18 @@ import smplx
 import pickle
 import argparse
 import numpy as np
+from tqdm import tqdm
 
-from src.load import load_pickle
+from src.load import load_pickle, load_obj
 from utils.util import visualize_grid
 from utils.common import batch_matrix2euler
 
 def main(args,
          ext='npz',
          gender='neutral',
-         model_type='smplx',
          plot_joints=False,
-         sample_shape=True,
          sample_expression=True,
          num_expression_coeffs=10,
-         plotting_module='pyrender',
          use_face_contour=False):
 
     os.makedirs(args.save_path, exist_ok=True)
@@ -33,7 +31,6 @@ def main(args,
             if file.endswith('.obj'):
                 mesh_list.append(file)
         num_frames = len(mesh_list)
-
 
     if args.model_type == 'smplx':
         global_orient = full_pose[:,:3]
@@ -55,7 +52,7 @@ def main(args,
                              num_expression_coeffs=num_expression_coeffs,
                              ext=ext)
 
-    for i in range(num_frames):
+    for i in tqdm(range(num_frames)):
         if args.model_type == 'smpl':
             output = model(betas=shape.unsqueeze(0), expression=exp[i].unsqueeze(0),
                            return_verts=True)
@@ -72,8 +69,7 @@ def main(args,
         elif args.model_type == 'flame':
             raise NotImplementedError
         elif args.model_type == 'mesh':
-            meshfile = open(os.path.join(args.load_path, mesh_list[i]))
-
+            vertices, faces = load_obj(os.path.join(args.load_path, mesh_list[i]))
 
         if args.plotting_module == 'pyrender':
             import pyrender
@@ -156,10 +152,13 @@ def main(args,
                 TexturesUV,
                 TexturesVertex
             )
-            from pytorch3d.io import load_obj, load_objs_as_meshes
             from pytorch3d.renderer.mesh.textures import Textures
 
-            R, T = look_at_view_transform(3, 0, 0)
+            if args.model_type in ['smplx', 'smpl']:
+                R, T = look_at_view_transform(3, 0, 0)
+            else:
+                R, T = look_at_view_transform(0.7, 0, 0)
+
             T[0,0] = T[0,0]
             T[0,1] = T[0,1]
             cameras = FoVPerspectiveCameras(device=device, R=R, T=T)
@@ -181,14 +180,16 @@ def main(args,
                     lights=lights
                 )
             )
+            
+            if args.model_type in ['smplx', 'smpl']:
+                faces = model.faces.astype(np.int64)
 
-            verts = torch.from_numpy(vertices).unsqueeze(0).to(device)
-            faces = torch.from_numpy(model.faces.astype(np.int64)).unsqueeze(0).to(device)
-
-            verts_rgb = torch.full(verts, 0.5)
+            vertices = torch.from_numpy(vertices).unsqueeze(0).to(device).float()
+            faces = torch.from_numpy(faces).unsqueeze(0).to(device)
+            verts_rgb = torch.full(vertices.shape, 0.5)
             textures = Textures(verts_rgb=verts_rgb.to(device))
             
-            mesh = Meshes(verts = verts,
+            mesh = Meshes(verts = vertices,
                           faces = faces,
                           textures=textures)
 
@@ -196,19 +197,16 @@ def main(args,
             image = 255*image[0, ..., :3].cpu().numpy()
             cv2.imwrite(os.path.join(args.save_path, '{}.png'.format(str(i).zfill(4))), image)
 
-
-
-
         else:
-            raise ValueError('Unknown plotting_module: {}'.format(plotting_module))
+            raise ValueError('Unknown plotting_module: {}'.format(args.plotting_module))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='SMPL Families Parameter Visualization')
 
-    parser.add_argument('--model_folder', required=True, type=str,
+    parser.add_argument('--model_folder', type=str,
                         help='The path to the model folder')
     parser.add_argument('--model_type', default='smplx', type=str,
-                        choices=['smpl', 'smplh', 'smplx', 'mano', 'flame'],
+                        choices=['smpl', 'smplh', 'smplx', 'mano', 'flame', 'mesh'],
                         help='The type of model to load')
     parser.add_argument('--load_path', default='./examples/smplx.pkl', type=str,
                         help='The path for the target pose sequence dictionary')
