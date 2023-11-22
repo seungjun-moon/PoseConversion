@@ -187,8 +187,14 @@ def main(args,
 
             vertices = torch.from_numpy(vertices).unsqueeze(0).to(device).float()
             faces = torch.from_numpy(faces).unsqueeze(0).to(device)
-            verts_rgb = torch.full(vertices.shape, 0.5)
-            textures = Textures(verts_rgb=verts_rgb.to(device))
+
+            try:
+                from pytorch3d.io import load_objs_as_meshes
+                gt_mesh = load_objs_as_meshes([os.path.join(args.load_path, mesh_list[i])], load_textures=True).to(device)
+                textures = gt_mesh.textures
+            except:
+                verts_rgb = torch.full(vertices.shape, 0.5)
+                textures = Textures(verts_rgb=verts_rgb.to(device))
             
             mesh = Meshes(verts = vertices,
                           faces = faces,
