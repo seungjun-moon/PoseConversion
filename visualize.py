@@ -6,9 +6,11 @@ import argparse
 import numpy as np
 from tqdm import tqdm
 
-from src.load import load_pickle, load_obj
+from src.load import load_pickle
 from utils.util import visualize_grid
 from utils.common import batch_matrix2euler
+from pytorch3d.io import load_objs_as_meshes
+from torchvision.transforms import ToTensor
 
 def main(args,
          ext='npz',
@@ -17,6 +19,8 @@ def main(args,
          sample_expression=True,
          num_expression_coeffs=10,
          use_face_contour=False):
+    
+    device = 'cuda'
 
     os.makedirs(args.save_path, exist_ok=True)
 
@@ -70,7 +74,9 @@ def main(args,
         elif args.model_type == 'flame':
             raise NotImplementedError
         elif args.model_type == 'mesh':
-            vertices, faces = load_obj(os.path.join(args.load_path, mesh_list[i]))
+            gt_mesh = load_objs_as_meshes([os.path.join(args.load_path, mesh_list[i])], load_textures=True).to(device)
+            vertices = torch.cat(gt_mesh.verts_list(), dim=0).unsqueeze(0)
+            faces = torch.cat(gt_mesh.faces_list(), dim=0).unsqueeze(0)
 
         if args.plotting_module == 'pyrender':
             import pyrender
@@ -158,7 +164,7 @@ def main(args,
             if args.model_type in ['smplx', 'smpl']:
                 R, T = look_at_view_transform(3, 0, 0)
             else:
-                R, T = look_at_view_transform(0.7, 0, 0)
+                R, T = look_at_view_transform(1, 0, 0)
 
             T[0,0] = T[0,0]
             T[0,1] = T[0,1]
@@ -185,23 +191,29 @@ def main(args,
             if args.model_type in ['smplx', 'smpl']:
                 faces = model.faces.astype(np.int64)
 
-            vertices = torch.from_numpy(vertices).unsqueeze(0).to(device).float()
-            faces = torch.from_numpy(faces).unsqueeze(0).to(device)
-
             try:
-                from pytorch3d.io import load_objs_as_meshes
-                gt_mesh = load_objs_as_meshes([os.path.join(args.load_path, mesh_list[i])], load_textures=True).to(device)
                 textures = gt_mesh.textures
+                mesh = Meshes(verts = vertices,
+                          faces = faces,
+                          textures=textures)
+
+                image = renderer(mesh)
+
             except:
                 verts_rgb = torch.full(vertices.shape, 0.5)
                 textures = Textures(verts_rgb=verts_rgb.to(device))
             
-            mesh = Meshes(verts = vertices,
-                          faces = faces,
-                          textures=textures)
+                mesh = Meshes(verts = vertices,
+                              faces = faces,
+                              textures=textures)
 
-            image = renderer(mesh)
+                image = renderer(mesh)
+
+
+            print(image.shape)
             image = 255*image[0, ..., :3].cpu().numpy()
+            image = image[:,:,[2,1,0]]
+            print(image.shape)
             cv2.imwrite(os.path.join(args.save_path, '{}.png'.format(str(i).zfill(4))), image)
 
         else:

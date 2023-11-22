@@ -79,9 +79,6 @@ def load_obj(obj_path):
             F * 3 face
     '''
 
-    v_array = np.zeros((1,3))
-    f_array = np.zeros((1,3))
-
     with open(obj_path) as f:
         for line in f:
             els = line.split()
@@ -92,7 +89,7 @@ def load_obj(obj_path):
                 try:
                     v_array = np.concatenate((v_array, np.array([[float1, float2, float3]])), axis=0)
                 except:
-                    v_array[0] = np.array([float1, float2, float3])
+                    v_array = np.array([[float1, float2, float3]])
 
             elif els[0] == 'f':
                 try: # f v1 v2 v3
@@ -102,7 +99,7 @@ def load_obj(obj_path):
                 try:
                     f_array = np.concatenate((f_array, np.array([[int1, int2, int3]])), axis=0)
                 except:
-                    f_array[0] = np.array([int1, int2, int3])
+                    f_array = np.array([[int1, int2, int3]])
 
     return v_array, f_array
 
