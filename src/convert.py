@@ -56,7 +56,9 @@ def blendshape_to_flame(blendshape_path):
     flame_pose[:,3] = coeffs[:,17]/2 + coeffs[:,19]/2
     flame_pose[:,3] = torch.clamp(flame_pose[:,3], max=0.2)
 
-    exp[:,1] = coeffs[:,19]*10 - 0.2
+    exp[:,0] = torch.clamp((coeffs[:,14]+coeffs[:,19]-coeffs[:,33]+coeffs[:,34]) * -3.0 -0.4, max=2.0, min=-2.0)
+    exp[:,1] = torch.clamp((coeffs[:,14]+coeffs[:,19]-coeffs[:,33]+coeffs[:,34]) * +1.5 +0.4, max=0.8, min=-0.8)
+
 
     return flame_pose, cam, exp, shape
 

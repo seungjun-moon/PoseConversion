@@ -10,6 +10,7 @@ from src.load import load_pickle
 from utils.util import visualize_grid
 from utils.common import batch_matrix2euler
 from pytorch3d.io import load_objs_as_meshes
+from pytorch3d.renderer import AmbientLights
 from torchvision.transforms import ToTensor
 
 def main(args,
@@ -175,7 +176,8 @@ def main(args,
                 blur_radius=0.0, 
                 faces_per_pixel=1,
             )
-            lights = PointLights(device=device, location=[[0.0, 0.0, +3.0]])
+            # lights = PointLights(device=device, location=[[0.0, 0.0, +3.0]])
+            lights = AmbientLights(device=device)
             renderer = MeshRenderer(
                 rasterizer=MeshRasterizer(
                     cameras=cameras, 
