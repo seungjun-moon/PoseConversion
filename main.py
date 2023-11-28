@@ -9,6 +9,7 @@ from pytorch3d.transforms import matrix_to_euler_angles
 from src.load import load_pickle
 from src.convert import *
 from src.refine import *
+from utils.common import temporal_smooth
 
 def module_data_dict():
     data_dict = {}
@@ -42,6 +43,12 @@ def main(args):
     elif args.load_source == 'blendshape' and data_dict[args.module] == 'flame':
         data = blendshape_to_flame(args.load_path)
 
+    if args.smooth > 0:
+        pose, cam, exp, shape = data
+        _pose = temporal_smooth(pose, window=args.smooth)
+        _exp  = temporal_smooth(exp,  window=args.smooth)
+        data = _pose, cam, _exp, shape
+
     if args.module == 'scarf':
         smplx_for_SCARF(data, args.save_path)
     elif args.module == 'hood':
@@ -57,5 +64,6 @@ if __name__ == '__main__':
     parser.add_argument('--save_path', type=str, default='/home/june1212/PoseConversion/examples', help='save path')
     parser.add_argument('--load_source', type=str, default='smplx', choices=['smpl','smplx','flame', 'blendshape'], help='loaded data source')
     parser.add_argument('--module', type=str, default='hood', choices=['hood', 'hood2', 'scarf','next3d'], help='data usage')
+    parser.add_argument('--smooth', type=int, default=0, help='designate smoothing window size. 0 for no smoothing. For now, only pose, exp smoothing applied.')
     args = parser.parse_args()
     main(args)

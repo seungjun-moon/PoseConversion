@@ -47,12 +47,19 @@ python main.py --load_path ./examples/a2f_export_bsweight.json \
 	--load_source blendshape --module next3d
 ```
 
-
 ***
 
 ## Visualization
 
 ```.bash
 python visualize.py --load_path ./examples/smplx.pkl \
-	--model_folder /home/june1212/scarf/data/SMPLX_NEUTRAL_2020.npz
+	--model_folder [YOUR/PATH/TO/SMPLX_NEUTRAL_2020.npz]
 ```
+
+You can visualize the naive sequence of meshes as below:
+
+```.bash
+python visualize.py --load_path [YOUR/MESH/PATH]] \
+	--model_type mesh
+```
+
