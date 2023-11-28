@@ -1,4 +1,5 @@
 import os
+import numpy as np
 import torch
 import pickle
 from utils.rotation_converter import *
@@ -72,4 +73,22 @@ def fit_pose_length(element, length):
             element_concat = torch.cat((element_concat, element[1:]), dim=0)
 
     return element_concat[:length]
+
+def temporal_smooth(param, window=3):
+    '''
+    param: N * X1 * X2 or N * X1
+    _param: param.shape
+    '''
+    _param = param.copy()
+
+    weights = [1 - float(abs(i-window))/(window+1) for i in range(2*window+1)]
+
+    assert param.shape[0] > 2 * window, 'frame number is too small for smoothing'
+
+    for i in range(window,param.shape[0]-window):
+        _param[i] = param[i-window:i+window+1] * weights
+
+    return _param
+
+
 
