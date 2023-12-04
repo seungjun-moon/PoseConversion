@@ -64,25 +64,30 @@ def smpl_from_gart(smpl_path, save_rot=False):
 
     return full_pose, cam, exp, shape
 
-
-
 def main(args):
-    full_pose, cam, exp, shape = flame_from_next3d(args.raw_path, save_rot=False)
+
     os.makedirs(os.path.dirname(args.save_path), exist_ok=True)
+    pkl_dict = {}
 
-    flame_dict = {}
-    flame_dict['full_pose'] = full_pose.numpy() # N * 4 * 3 * 3 if save_rot, else N * 4 * 3
-    flame_dict['cam'] = cam.numpy() # N * 3
-    flame_dict['exp'] = exp.numpy() # N * 50
-    flame_dict['shape'] = shape.numpy() # N * 100
+    if module_name == 'next3d':
+        full_pose, cam, exp, shape = flame_from_next3d(args.data_path, save_rot=False)
 
-    save_pkl(os.path.join(args.save_path, 'flame_letter.pkl'), flame_dict)
+    elif module_name == 'gart':
+        full_pose, cam, exp, shape = smpl_from_gart(args.data_path, save_rot=False)
+
+    pkl_dict = {}
+    pkl_dict['full_pose'] = full_pose.numpy() # N * 4 * 3 * 3 if save_rot, else N * 4 * 3
+    pkl_dict['cam'] = cam.numpy() # N * 3
+    pkl_dict['exp'] = exp.numpy() # N * 50
+    pkl_dict['shape'] = shape.numpy() # N * 100
+
+    save_pkl(args.save_path, pkl_dict)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--module_name', type=str, default='gart', help='')
     parser.add_argument('--data_path', type=str, default='/home/june1212/gart/novel_poses/walking.npy', help='')
-    parser.add_argument('--save_path', type=str, default='/home/june1212/gart/novel_poses/', help='')
+    parser.add_argument('--save_path', type=str, default='/home/june1212/gart/novel_poses/pickle.pkl', help='')
     args = parser.parse_args()
     main(args)
 

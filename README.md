@@ -8,15 +8,21 @@ Currently supports the conversion for the module [SCARF](https://github.com/yfen
 
 ## Preprocessing Raw Data From Existing Models
 
-#### Example #1: From raw DECA(in Next3D) output to pickle dictionary.
+#### Example: From raw DECA(in Next3D) output to pickle dictionary.
 ```.bash
-python preprocess.py --raw_path /your/path/to/deca_results/ \
-	--save_path /your/path/to/save_results/
+python preprocess.py --module_name next3d \
+--data_path /your/path/to/deca_results/	--save_path /your/path/to/save_results/file_name
+```
+
+#### Example: From raw SMPL(in GART) output to pickle dictionary.
+```.bash
+python preprocess.py --module_name gart \
+--data_path /your/path/to/smpl_npy/	--save_path /your/path/to/save_results/file_name
 ```
 
 ## Combining Different Modules into the Single Pose
 
-#### Example #2: Combine DECA(FLAME) output with PIXIE(SMPL-X) output.
+#### Example: Combine DECA(FLAME) output with PIXIE(SMPL-X) output.
 ```.bash
 python combine.py --smplx_path /your/path/to/smplx_results/ \
 	--flame_path /your/path/to/flame/ \
@@ -25,21 +31,21 @@ python combine.py --smplx_path /your/path/to/smplx_results/ \
 
 ## Converting Pose Parameters
 
-#### Example #1: From PIXIE(SMPL-X) output to HOOD(SMPL) input.
+#### Example: From PIXIE(SMPL-X) output to HOOD(SMPL) input.
 ```.bash
 python main.py --load_path ./examples/smplx.pkl \
 	--save_path ./examples/ \
 	--load_source smplx --module hood
 ```
 
-#### Example #2: From PIXIE(SMPL-X) output to HOOD2(SMPL-X) input.
+#### Example: From PIXIE(SMPL-X) output to HOOD2(SMPL-X) input.
 ```.bash
 python main.py --load_path ./examples/smplx.pkl \
 	--save_path ./examples/ \
 	--load_source smplx --module hood2
 ```
 
-#### Example #3: From BLENDSHAPE output to Next3D input.
+#### Example: From BLENDSHAPE output to Next3D input.
 Currently we don't have standard output shape for BLENDSHAPE. This repo utilizes the example JSON file in ./examples.
 ```.bash
 python main.py --load_path ./examples/a2f_export_bsweight.json \
