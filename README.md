@@ -8,48 +8,48 @@ Currently supports the conversion for the module [SCARF](https://github.com/yfen
 
 ## Preprocessing Raw Data From Existing Models
 
-#### Example: From raw DECA(in Next3D) output to pickle dictionary.
+#### From raw DECA(in Next3D) output to pickle dictionary.
 ```.bash
 python preprocess.py --module_name next3d \
---data_path /your/path/to/deca_results/	--save_path /your/path/to/save_results/file_name
+--data_path /your/path/to/deca_results --save_path /your/path/to/save_results/file_name
 ```
 
-#### Example: From raw SMPL(in GART) output to pickle dictionary.
+#### From raw SMPL(in GART) output to pickle dictionary.
 ```.bash
 python preprocess.py --module_name gart \
---data_path /your/path/to/smpl_npy/	--save_path /your/path/to/save_results/file_name
+--data_path /your/path/to/smpl_npy --save_path /your/path/to/save_results/file_name
 ```
 
 ## Combining Different Modules into the Single Pose
 
-#### Example: Combine DECA(FLAME) output with PIXIE(SMPL-X) output.
+#### Combine DECA(FLAME) output with PIXIE(SMPL-X) output.
 ```.bash
-python combine.py --smplx_path /your/path/to/smplx_results/ \
-	--flame_path /your/path/to/flame/ \
-	--save_path /your/path/to/save_results/
+python combine.py --smplx_path /your/path/to/smplx_results \
+	--flame_path /your/path/to/flame \
+	--save_path /your/path/to/save_results
 ```
 
 ## Converting Pose Parameters
 
-#### Example: From PIXIE(SMPL-X) output to HOOD(SMPL) input.
+#### From PIXIE(SMPL-X) output to HOOD(SMPL) input.
 ```.bash
 python main.py --load_path ./examples/smplx.pkl \
-	--save_path ./examples/ \
+	--save_path ./examples \
 	--load_source smplx --module hood
 ```
 
-#### Example: From PIXIE(SMPL-X) output to HOOD2(SMPL-X) input.
+#### From PIXIE(SMPL-X) output to HOOD2(SMPL-X) input.
 ```.bash
 python main.py --load_path ./examples/smplx.pkl \
-	--save_path ./examples/ \
+	--save_path ./examples \
 	--load_source smplx --module hood2
 ```
 
-#### Example: From BLENDSHAPE output to Next3D input.
+#### From BLENDSHAPE output to Next3D input.
 Currently we don't have standard output shape for BLENDSHAPE. This repo utilizes the example JSON file in ./examples.
 ```.bash
 python main.py --load_path ./examples/a2f_export_bsweight.json \
-	--save_path ./examples/ \
+	--save_path ./examples \
 	--load_source blendshape --module next3d
 ```
 
@@ -65,7 +65,7 @@ python visualize.py --load_path ./examples/smplx.pkl \
 You can visualize the naive sequence of meshes as below:
 
 ```.bash
-python visualize.py --load_path [YOUR/MESH/PATH]] \
+python visualize.py --load_path [YOUR/MESH/PATH] \
 	--model_type mesh
 ```
 
