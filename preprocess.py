@@ -51,6 +51,21 @@ def flame_from_next3d(deca_path, save_rot=True):
 
     return full_pose, cam, exp, shape
 
+def smpl_from_gart(smpl_path, save_rot=False):
+    '''
+    '''
+    full_pose = torch.from_numpy(np.load(smpl_path)) # N * 72
+    cam   = torch.zeros(full_pose.shape[0], 3)
+    exp   = torch.zeros(full_pose.shape[0], 50)
+    shape = torch.zeros(full_pose.shape[0], 100)
+
+    if save_rot:
+        full_pose = batch_euler2matrix(full_pose)
+
+    return full_pose, cam, exp, shape
+
+
+
 def main(args):
     full_pose, cam, exp, shape = flame_from_next3d(args.raw_path, save_rot=False)
     os.makedirs(os.path.dirname(args.save_path), exist_ok=True)
@@ -65,8 +80,9 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--raw_path', type=str, default='/home/june1212/next3d/letters_deca/', help='raw data path')
-    parser.add_argument('--save_path', type=str, default='/home/june1212/PoseConversion/examples/', help='save path')
+    parser.add_argument('--module_name', type=str, default='gart', help='')
+    parser.add_argument('--data_path', type=str, default='/home/june1212/gart/novel_poses/walking.npy', help='')
+    parser.add_argument('--save_path', type=str, default='/home/june1212/gart/novel_poses/', help='')
     args = parser.parse_args()
     main(args)
 
