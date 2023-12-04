@@ -13,6 +13,7 @@ from utils.common import temporal_smooth
 
 def module_data_dict():
     data_dict = {}
+    data_dict['gart']='smpl'
     data_dict['hood']='smpl'
     data_dict['hood2']='smplx'
     data_dict['scarf']='smplx'
@@ -57,13 +58,15 @@ def main(args):
         smplx_for_HOOD2(data, os.path.join(args.save_path, 'smplx_hood2.pkl'))
     elif args.module == 'next3d':
         flame_for_NEXT3D(data, os.path.join(args.save_path, 'flame_next3d.pkl'))
+    elif args.module == 'gart':
+        smpl_for_gart(data, os.path.join(args.save_path, 'smpl_gart.npy'))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--load_path', type=str, default='/home/june1212/PoseConversion/examples/smplx.pkl', help='original pose path')
     parser.add_argument('--save_path', type=str, default='/home/june1212/PoseConversion/examples', help='save path')
     parser.add_argument('--load_source', type=str, default='smplx', choices=['smpl','smplx','flame', 'blendshape'], help='loaded data source')
-    parser.add_argument('--module', type=str, default='hood', choices=['hood', 'hood2', 'scarf','next3d'], help='data usage')
+    parser.add_argument('--module', type=str, default='hood', choices=['gart','hood', 'hood2', 'scarf','next3d'], help='data usage')
     parser.add_argument('--smooth', type=int, default=0, help='designate smoothing window size. 0 for no smoothing. For now, only pose, exp smoothing applied.')
     args = parser.parse_args()
     main(args)

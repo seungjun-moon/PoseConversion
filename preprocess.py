@@ -69,10 +69,10 @@ def main(args):
     os.makedirs(os.path.dirname(args.save_path), exist_ok=True)
     pkl_dict = {}
 
-    if module_name == 'next3d':
+    if args.module_name == 'next3d':
         full_pose, cam, exp, shape = flame_from_next3d(args.data_path, save_rot=False)
 
-    elif module_name == 'gart':
+    elif args.module_name == 'gart':
         full_pose, cam, exp, shape = smpl_from_gart(args.data_path, save_rot=False)
 
     pkl_dict = {}

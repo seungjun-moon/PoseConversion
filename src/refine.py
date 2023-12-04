@@ -108,4 +108,8 @@ def flame_for_NEXT3D(flame, save_path):
 
     return out_dict
 
+def smpl_for_gart(smpl, save_path):
+    pose, cam, exp, shape = smpl
+
+    np.save(save_path, pose)
 
