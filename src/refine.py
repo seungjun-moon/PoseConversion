@@ -111,5 +111,15 @@ def flame_for_NEXT3D(flame, save_path):
 def smpl_for_gart(smpl, save_path):
     pose, cam, exp, shape = smpl
 
+    '''
+    pose: target shape --> N * 72
+    '''
+
+    if len(pose.shape) == 4: # N * 24 * 3 * 3
+
+        pose = batch_matrix2axis(pose)
+        pose = torch.reshape(pose, (pose.shape[0],-1))
+    print(pose.shape)
+
     np.save(save_path, pose)
 

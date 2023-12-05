@@ -17,9 +17,10 @@ def main(args):
 		plt.savefig(os.path.join(args.save_path, 'pose_{}.png'.format(str(i).zfill(4))))
 		plt.cla()
 
-	# for i in range(exp.shape[1]):
-	for i in range(10):	
+	for i in range(exp.shape[1]):
+	# for i in range(10):
 		x = exp[:,i]
+		
 		plt.plot(x)
 		plt.savefig(os.path.join(args.save_path, 'exp_{}.png'.format(str(i).zfill(4))))
 		plt.cla()
