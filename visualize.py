@@ -1,6 +1,5 @@
 import os
 import torch
-import smplx
 import pickle
 import argparse
 import numpy as np
@@ -49,6 +48,8 @@ def main(args,
         right_hand_pose = body_pose[:,39*3:54*3]
 
     if args.model_type in ['smplx', 'smpl']:
+
+        import smplx
 
         num_betas = shape.shape[-1]
 
@@ -165,7 +166,7 @@ def main(args,
             if args.model_type in ['smplx', 'smpl']:
                 R, T = look_at_view_transform(3, 0, 0)
             else:
-                R, T = look_at_view_transform(1, 0, 0)
+                R, T = look_at_view_transform(0.8, 0, 0)
 
             T[0,0] = T[0,0]
             T[0,1] = T[0,1]
@@ -176,8 +177,8 @@ def main(args,
                 blur_radius=0.0, 
                 faces_per_pixel=1,
             )
-            # lights = PointLights(device=device, location=[[0.0, 0.0, +3.0]])
-            lights = AmbientLights(device=device)
+            lights = PointLights(device=device, loc   ation=[[0.0, 0.0, +3]])
+            # lights = AmbientLights(device=device)
             renderer = MeshRenderer(
                 rasterizer=MeshRasterizer(
                     cameras=cameras, 
@@ -211,11 +212,8 @@ def main(args,
 
                 image = renderer(mesh)
 
-
-            print(image.shape)
             image = 255*image[0, ..., :3].cpu().numpy()
             image = image[:,:,[2,1,0]]
-            print(image.shape)
             cv2.imwrite(os.path.join(args.save_path, '{}.png'.format(str(i).zfill(4))), image)
 
         else:

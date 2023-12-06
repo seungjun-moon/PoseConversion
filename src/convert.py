@@ -68,12 +68,10 @@ def blendshape_to_flame(blendshape_path):
 
     v=10
     for i in range(v, num):
-        weight = max(150-i%150-(150-v), i%150-(150-v), 0) * 2 # make periodic peak
-
-        print(weight)
+        weight = max(150-i%150-(150-v), i%150-(150-v), 0) * 2.4 # make periodic peak
         
-        exp[i,2]  = weight *  0.03
-        exp[i,3]  = weight *  0.12
+        # exp[i,2]  = weight *  0.03
+        # exp[i,3]  = weight *  0.12
         exp[i,8]  = weight *  0.08
         exp[i,9]  = weight *  0.15
         exp[i,11] = weight *  0.07
@@ -92,7 +90,7 @@ def blendshape_to_flame(blendshape_path):
 
 
         exp[i,4]  = weight * -0.12
-        exp[i,5]  = weight * -0.12
+        # exp[i,5]  = weight * -0.12
         exp[i,7]  = weight * -0.12
         exp[i,15] = weight * -0.07
         exp[i,16] = weight * -0.14
