@@ -90,5 +90,26 @@ def temporal_smooth(param, window=3):
 
     return _param
 
+def find_affine_transform(P1, P2):
+    '''
+    2D affine transformation
+    P1: numpy array with N * 2
+    P2: numpy array with N * 2
+
+    return: Affine Matrix
+    '''
+
+    A = np.vstack((P1.T, np.ones((1, P1.shape[0])))).T
+    B = np.vstack((P2.T, np.ones((1, P2.shape[0])))).T
+
+    # Solve for the transformation matrix
+    T, _, _, _ = np.linalg.lstsq(A, B, rcond=None)
+
+    # Reshape the matrix to a 3x3 matrix
+    # transform_matrix = np.vstack((T, [0, 0, 1]))
+    
+    transform_matrix = T
+
+    return transform_matrix
 
 

@@ -23,19 +23,22 @@ def smplx_to_smpl(smplx_path, save=False):
 
     return smpl_pose, cam, exp, shape
 
-def smplx_to_flame(smplx_path, return_axis=False):
+def smplx_to_flame(smplx_path):
     raise NotImplementedError
 
-def flame_to_smplx(flame_path, return_axis=False):
+def flame_to_smplx(flame_path):
     raise NotImplementedError
 
-def flame_to_smpl(flame_path, return_axis=False):
+def flame_to_smpl(flame_path):
     raise NotImplementedError
 
-def smpl_to_smplx(smpl_path, return_axis=False):
+def flame_to_68_landmark(flame_path):
     raise NotImplementedError
 
-def smpl_to_flame(smpl_path, return_axis=False):
+def smpl_to_smplx(smpl_path):
+    raise NotImplementedError
+
+def smpl_to_flame(smpl_path, ):
     raise NotImplementedError
 
 def blendshape_to_flame(blendshape_path):
