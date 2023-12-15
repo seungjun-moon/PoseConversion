@@ -27,22 +27,23 @@ def main(args):
     data_dict = module_data_dict()
 
     if args.load_source == data_dict[args.module]: #Not works for BlendShape
-        data = load_pickle(args.load_path)
+        if
+        data = load_pickle(args.load_file)
     elif args.load_source == 'smpl' and data_dict[args.module] == 'smplx':
-        data = smpl_to_smplx(args.load_path)
+        data = smpl_to_smplx(args.load_file)
     elif args.load_source == 'smpl' and data_dict[args.module] == 'flame':
-        data = smpl_to_flame(args.load_path)
+        data = smpl_to_flame(args.load_file)
     elif args.load_source == 'smplx' and data_dict[args.module] == 'smpl':
-        data = smplx_to_smpl(args.load_path)
+        data = smplx_to_smpl(args.load_file)
     elif args.load_source == 'smplx' and data_dict[args.module] == 'flame':
-        data = smplx_to_flame(args.load_path)
+        data = smplx_to_flame(args.load_file)
     elif args.load_source == 'flame' and data_dict[args.module] == 'smpl':
-        data = flame_to_smpl(args.load_path)
+        data = flame_to_smpl(args.load_file)
     elif args.load_source == 'flame' and data_dict[args.module] == 'smplx':
-        data = flame_to_smplx(args.load_path)
+        data = flame_to_smplx(args.load_file)
 
     elif args.load_source == 'blendshape' and data_dict[args.module] == 'flame':
-        data = blendshape_to_flame(args.load_path)
+        data = blendshape_to_flame(args.load_file)
 
     if args.smooth > 0:
         pose, cam, exp, shape = data
@@ -63,7 +64,7 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--load_path', type=str, default='/home/june1212/PoseConversion/examples/smplx.pkl', help='original pose path')
+    parser.add_argument('--load_file', type=str, default='/home/june1212/PoseConversion/examples/smplx.pkl', help='original pose path')
     parser.add_argument('--save_path', type=str, default='/home/june1212/PoseConversion/examples', help='save path')
     parser.add_argument('--load_source', type=str, default='smplx', choices=['smpl','smplx','flame', 'blendshape'], help='loaded data source')
     parser.add_argument('--module', type=str, default='hood', choices=['gart','hood', 'hood2', 'scarf','next3d'], help='data usage')

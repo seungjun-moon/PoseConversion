@@ -57,8 +57,6 @@ def load_pickle(filepath):
 
     return full_pose, cam, exp, shape
 
-
-
 def load_json(blendshape_path):
     '''
     Input: .json dictionary path, only for the BlendShape
@@ -70,9 +68,7 @@ def load_json(blendshape_path):
 
     return coeffs
 
-
-
-def load_obj(obj_path):
+def load_blendshape_obj(obj_path):
     '''
     Input : .obj file path.
     Output: V * 3 vertex
@@ -103,3 +99,10 @@ def load_obj(obj_path):
 
     return v_array, f_array
 
+def load_peoplesnapshot_hdf5(hdf5_path):
+    '''
+    Input : .hdf5 file path.
+    '''
+    import h5py
+    with h5py.File(hdf5_path, "r") as f:
+        print(f)

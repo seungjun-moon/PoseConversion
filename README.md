@@ -33,14 +33,14 @@ python combine.py --smplx_path /your/path/to/smplx_results \
 
 #### From PIXIE(SMPL-X) output to HOOD(SMPL) input.
 ```.bash
-python main.py --load_path ./examples/smplx.pkl \
+python main.py --load_file ./examples/smplx.pkl \
 	--save_path ./examples \
 	--load_source smplx --module hood
 ```
 
 #### From PIXIE(SMPL-X) output to HOOD2(SMPL-X) input.
 ```.bash
-python main.py --load_path ./examples/smplx.pkl \
+python main.py --load_file ./examples/smplx.pkl \
 	--save_path ./examples \
 	--load_source smplx --module hood2
 ```
@@ -48,7 +48,7 @@ python main.py --load_path ./examples/smplx.pkl \
 #### From BLENDSHAPE output to Next3D input.
 Currently we don't have standard output shape for BLENDSHAPE. This repo utilizes the example JSON file in ./examples.
 ```.bash
-python main.py --load_path ./examples/a2f_export_bsweight.json \
+python main.py --load_file ./examples/a2f_export_bsweight.json \
 	--save_path ./examples \
 	--load_source blendshape --module next3d
 ```
