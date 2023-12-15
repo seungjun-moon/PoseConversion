@@ -1,8 +1,28 @@
 import os
+import logging
 import json
 import pickle
 import torch
 import numpy as np
+
+def load_integration(path, datatype='blendshape'):
+    if path[-3:] == 'pkl':
+        return load_pickle(path)
+
+    elif path[-3:] == 'obj':
+        return load_obj(path)
+
+    elif path[-4:] == 'json':
+        if datatype == 'blendshape':
+            return load_blendshape_json(path)
+        else:
+            raise NotImplementedError
+
+    elif path[-4:] == 'hdf5':
+        return load_peoplesnapshot_hdf5(path)
+
+    else:
+        raise NotImplementedError
 
 
 def load_pickle(filepath):
@@ -57,7 +77,7 @@ def load_pickle(filepath):
 
     return full_pose, cam, exp, shape
 
-def load_json(blendshape_path):
+def load_blendshape_json(blendshape_path):
     '''
     Input: .json dictionary path, only for the BlendShape
     Output: N * 52
@@ -68,7 +88,7 @@ def load_json(blendshape_path):
 
     return coeffs
 
-def load_blendshape_obj(obj_path):
+def load_obj(obj_path):
     '''
     Input : .obj file path.
     Output: V * 3 vertex

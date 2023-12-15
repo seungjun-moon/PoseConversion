@@ -6,7 +6,7 @@ import argparse
 import numpy as np
 from pytorch3d.transforms import matrix_to_euler_angles
 
-from src.load import load_pickle
+from src.load import load_pickle, load_integration
 from src.convert import *
 from src.refine import *
 from utils.common import temporal_smooth
@@ -27,8 +27,7 @@ def main(args):
     data_dict = module_data_dict()
 
     if args.load_source == data_dict[args.module]: #Not works for BlendShape
-        if
-        data = load_pickle(args.load_file)
+        data = load_integration(args.load_file)
     elif args.load_source == 'smpl' and data_dict[args.module] == 'smplx':
         data = smpl_to_smplx(args.load_file)
     elif args.load_source == 'smpl' and data_dict[args.module] == 'flame':

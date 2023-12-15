@@ -5,10 +5,10 @@ import pickle
 import argparse
 import numpy as np
 from utils.rotation_converter import batch_rodrigues, batch_euler2axis, batch_axis2euler, batch_matrix2axis, inverse_batch_rodrigues
-from src.load import load_pickle, load_blendshape_json
+from src.load import load_integration, load_pickle, load_blendshape_json
 
 def smplx_to_smpl(smplx_path, save=False):
-    smplx_pose, cam, exp, shape = load_pickle(smplx_path)
+    smplx_pose, cam, exp, shape = load_pickle(smplx_path) #TODO: alter to load_integreation
 
     n_frames = len(smplx_pose)
     smpl_indices_in_smplx = [i for i in range(22)]+[25,40]
