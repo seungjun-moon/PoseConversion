@@ -21,6 +21,9 @@ def load_integration(path, datatype='blendshape'):
     elif path[-4:] == 'hdf5':
         return load_peoplesnapshot_hdf5(path)
 
+    elif path[-3:] == 'npz':
+        return load_animnerf_npz(path)
+
     else:
         raise NotImplementedError
 
@@ -125,4 +128,19 @@ def load_peoplesnapshot_hdf5(hdf5_path):
     '''
     import h5py
     with h5py.File(hdf5_path, "r") as f:
-        print(f)
+        print(f['pose'].shape)
+        print(f['trans'].shape)
+        print(f['betas'].shape)
+
+def load_animnerf_npz(npz_path):
+    f = dict(np.load(npz_path))
+
+    pose  = torch.cat((torch.from_numpy(f['global_orient']), torch.from_numpy(f['body_pose'])), dim=1) # N * 72
+    shape = torch.from_numpy(f['betas'][0]) # 10
+    exp   = torch.zeros((pose.shape[0], 50))
+    cam   = torch.from_numpy(f['transl'][0])
+
+    return pose, shape, exp, cam
+    
+
+

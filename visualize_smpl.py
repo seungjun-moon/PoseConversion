@@ -130,15 +130,13 @@ def main(args):
     except:
         # logger.info('Load camera from {}'.format(camera_path))
 
-    camera_path  = f"{root}/cameras.npz"
-    smpl_path    = f"{root}/poses_optimized.npz"
-    keypoints_2d = f"{root}/keypoints.npy"
+    # camera_path  = f"{root}/cameras.npz"
+    # smpl_path    = f"{root}/poses_optimized.npz"
+    # keypoints_2d = f"{root}/keypoints.npy"
 
     if os.path.isfile(camera_path):
         logger.info('Load camera from {}'.format(camera_path))
         camera = dict(np.load(camera_path))
-    else:
-        camera = 
 
     camera = dict(np.load(f"{root}/cameras.npz"))
     smpl_params = dict(np.load(f"{root}/poses_optimized.npz"))
