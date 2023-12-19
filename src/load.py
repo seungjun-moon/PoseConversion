@@ -136,6 +136,8 @@ def load_animnerf_npz(npz_path):
     f = dict(np.load(npz_path))
 
     pose  = torch.cat((torch.from_numpy(f['global_orient']), torch.from_numpy(f['body_pose'])), dim=1) # N * 72
+    print(pose)
+    print(pose.shape)
     shape = torch.from_numpy(f['betas'][0]) # 10
     exp   = torch.zeros((pose.shape[0], 50))
     cam   = torch.from_numpy(f['transl'][0])
@@ -143,4 +145,14 @@ def load_animnerf_npz(npz_path):
     return pose, shape, exp, cam
     
 
+# def load_animnerf_npz(npz_path):
+#     f = dict(np.load(npz_path))
+
+#     pose  = torch.cat((torch.from_numpy(f['global_orient']), torch.from_numpy(f['body_pose'])), dim=1) # N * 72
+#     print(pose)
+#     shape = torch.from_numpy(f['betas'][0]) # 10
+#     exp   = torch.zeros((pose.shape[0], 50))
+#     cam   = torch.from_numpy(f['transl'][0])
+
+#     return pose, shape, exp, cam
 

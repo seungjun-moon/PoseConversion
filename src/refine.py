@@ -1,6 +1,7 @@
 import os
 import sys
 import torch
+import logging
 import pickle
 import argparse
 import numpy as np
@@ -24,20 +25,26 @@ def smpl_for_HOOD(smpl, save_path):
 
     ## KEY #2 : body_pose
 
-    rot_mats = pose[:, 1:] # exclude global orientations
-    rot_axis = batch_matrix2axis(rot_mats)
-    rot_axis = rot_axis.reshape(rot_axis.shape[0], -1)
+    if len(pose.shape) == 4: # N * J * 3 * 3
+        logging.info("Converting rotation matrix to axis angle")
+        rot_mats = pose[:, 1:] # exclude global orientations
+        rot_axis = batch_matrix2axis(rot_mats)
+        rot_axis = rot_axis.reshape(rot_axis.shape[0], -1)
+        # grot_mats = pose[:,0]
+        # grot_axis = batch_matrix2euler(grot_mats)
+
+    elif len(pose.shape) == 2: # N * 3J
+        rot_axis = pose.reshape(pose.shape[0], -1, 3)
+
+    grot_axis = torch.zeros((rot_axis.shape[0],3))
 
     out_dict['body_pose'] = rot_axis
+    out_dict['global_orient'] = grot_axis
 
     ## KEY #3 : global_orient
 
-    grot_mats = pose[:,0]
-    grot_axis = batch_matrix2euler(grot_mats)
-
     ## TODO: Alignment between PIXIE and HOOD are different.
-    grot_axis = torch.zeros(grot_axis.shape)
-    out_dict['global_orient'] = grot_axis
+
 
     ## KEY #4 : betas
 
