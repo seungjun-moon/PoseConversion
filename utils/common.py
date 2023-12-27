@@ -112,4 +112,22 @@ def find_affine_transform(P1, P2):
 
     return transform_matrix
 
+def normalize_degree(poses, pi=3.14159265358979323846):
+    '''
+    poses : N * 72
+    '''
+
+    poses_ = poses.clone().detach()
+
+    # poses_ = torch.where(poses >  pi,  2*pi-poses, poses)
+    # poses_ = torch.where(poses < -pi, -2*pi-poses, poses_)
+
+    poses_ = torch.where(poses_ >  pi,   2*pi - poses_, poses_)
+    poses_ = torch.where(poses_ < -pi,  -2*pi - poses_, poses_)
+
+    assert torch.max(poses_) < pi
+
+    return poses_
+
+
 

@@ -22,7 +22,12 @@ def load_integration(path, datatype='blendshape'):
         return load_peoplesnapshot_hdf5(path)
 
     elif path[-3:] == 'npz':
-        return load_animnerf_npz(path)
+        if datatype == 'camera':
+            return load_camera_npz(path)
+        elif datatype == 'smpl':
+            return load_pose_npz(path)
+        elif datatype == 'animnerf_smpl':
+            return load_animnerf_npz(path)
 
     else:
         raise NotImplementedError
@@ -136,23 +141,40 @@ def load_animnerf_npz(npz_path):
     f = dict(np.load(npz_path))
 
     pose  = torch.cat((torch.from_numpy(f['global_orient']), torch.from_numpy(f['body_pose'])), dim=1) # N * 72
-    print(pose)
-    print(pose.shape)
-    shape = torch.from_numpy(f['betas'][0]) # 10
+    print('global orient')
+    sample_index = [0]
+    print(pose[sample_index,:3])
+    print('poses', torch.max(pose[:,:3]), torch.min(pose[:,:3]))
+    print(pose[sample_index,3:])
+    print(pose.shape, torch.max(pose[:,3:]), torch.min(pose[:,3:]))
+    shape = torch.from_numpy(f['betas']) # 10
     exp   = torch.zeros((pose.shape[0], 50))
     cam   = torch.from_numpy(f['transl'][0])
 
     return pose, shape, exp, cam
+
+def load_pose_npz(npz_path):
+    f = dict(np.load(npz_path))
+
+    print(f.keys())
+
+    sample_index = [0]
+
+    print('global orient')
+    print(f['transl'][sample_index])
+    print(f['transl'].shape, np.max(f['transl']), np.min(f['transl']))
+    print('poses')
+    print(f['thetas'][sample_index])
+    print(f['thetas'].shape, np.max(f['thetas']), np.min(f['thetas']))
     
 
-# def load_animnerf_npz(npz_path):
-#     f = dict(np.load(npz_path))
+def load_camera_npz(npz_path):
+    f = dict(np.load(npz_path))
 
-#     pose  = torch.cat((torch.from_numpy(f['global_orient']), torch.from_numpy(f['body_pose'])), dim=1) # N * 72
-#     print(pose)
-#     shape = torch.from_numpy(f['betas'][0]) # 10
-#     exp   = torch.zeros((pose.shape[0], 50))
-#     cam   = torch.from_numpy(f['transl'][0])
+    print(f['intrinsic'])
+    print(f['extrinsic'])
+    print(f['height'])
+    print(f['width'])
 
-#     return pose, shape, exp, cam
+    print(f.keys())
 
