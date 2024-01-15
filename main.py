@@ -48,18 +48,21 @@ def main(args):
             _exp  = temporal_smooth(exp,  window=args.smooth)
             data = _pose, cam, _exp, shape
 
-        if args.module == 'scarf':
-            smplx_for_SCARF(data, args.save_path)
-        elif args.module == 'hood':
-            smpl_for_HOOD(data, os.path.join(args.save_path, 'smpl_hood.pkl'))
-        elif args.module == 'hood2':
-            smplx_for_HOOD2(data, os.path.join(args.save_path, 'smplx_hood2.pkl'))
-        elif args.module == 'next3d':
-            flame_for_NEXT3D(data, os.path.join(args.save_path, 'flame_next3d.pkl'))
-        elif args.module == 'gart':
-            smpl_for_gart(data, os.path.join(args.save_path, 'smpl_gart.npy'))
+    elif args.action == 'load':
+        data = load_integration(args.load_file, datatype=args.load_source)
 
-    elif args.action == 'norm':
+    if args.module == 'scarf':
+        smplx_for_SCARF(data, args.save_path)
+    elif args.module == 'hood':
+        smpl_for_HOOD(data, os.path.join(args.save_path, 'smpl_hood.pkl'))
+    elif args.module == 'hood2':
+        smplx_for_HOOD2(data, os.path.join(args.save_path, 'smplx_hood2.pkl'))
+    elif args.module == 'next3d':
+        flame_for_NEXT3D(data, os.path.join(args.save_path, 'flame_2023.pkl'))
+    elif args.module == 'gart':
+        smpl_for_gart(data, os.path.join(args.save_path, 'smpl_gart.npy'))
+
+    if args.action == 'norm':
         # data = load_integration(args.load_file, datatype=args.load_source)
         # pose, _, _, _ = data
         # pose_ = normalize_degree(poses=pose[:, 3:], pi=1)
@@ -82,10 +85,6 @@ def main(args):
 
         data['betas'] = data_['betas']
         np.savez(save_file, **data)
-
-    elif args.action == 'load':
-        data = load_integration(args.load_file, datatype=args.load_source)
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

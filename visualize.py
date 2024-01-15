@@ -177,7 +177,7 @@ def main(args,
                 blur_radius=0.0, 
                 faces_per_pixel=1,
             )
-            lights = PointLights(device=device, loc   ation=[[0.0, 0.0, +3]])
+            lights = PointLights(device=device, location=[[0.0, 0.0, +3]])
             # lights = AmbientLights(device=device)
             renderer = MeshRenderer(
                 rasterizer=MeshRasterizer(

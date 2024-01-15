@@ -15,6 +15,8 @@ def load_integration(path, datatype='blendshape'):
     elif path[-4:] == 'json':
         if datatype == 'blendshape':
             return load_blendshape_json(path)
+        elif datatype == 'flame':
+            return load_flame2023_json(path)
         else:
             raise NotImplementedError
 
@@ -95,6 +97,32 @@ def load_blendshape_json(blendshape_path):
     coeffs = torch.from_numpy(np.asarray(blendshape['weightMat'])) # N * 52
 
     return coeffs
+
+def load_flame2023_json(blendshape_path):
+    '''
+    Input: .json dictionary path with FLAME2023 expression params.
+    Output: N * 100
+    '''
+    from pytorch3d.transforms import quaternion_to_axis_angle
+
+    f = open(blendshape_path)
+    blendshape = json.load(f)
+    exp = torch.from_numpy(np.asarray(blendshape['weightMat'])) # N * 52
+
+    n_frames = exp.shape[0]
+    device = exp.device
+
+    cam = torch.zeros((n_frames, 3)).to(device)
+    shape = torch.zeros((n_frames, 100)).to(device)
+    full_pose = torch.from_numpy(np.asarray(blendshape['rotations']))
+
+    full_pose = quaternion_to_axis_angle(full_pose)[:,0]
+
+    neck_pose = torch.zeros(full_pose.shape).to(full_pose.device)
+
+    full_pose = torch.cat((neck_pose, full_pose), dim=1)
+
+    return full_pose, cam, exp, shape
 
 def load_obj(obj_path):
     '''
