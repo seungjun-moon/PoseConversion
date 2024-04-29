@@ -77,18 +77,18 @@ def fit_pose_length(element, length):
 def temporal_smooth(param, window=3):
     '''
     param: N * X1 * X2 or N * X1
-    _param: param.shape
+    param_: param.shape
     '''
-    _param = param.clone().detach()
+    param_ = param.clone().detach()
 
-    weights = torch.FloatTensor([1 - float(abs(i-window))/(window+1) for i in range(2*window+1)]).to(_param.device)
+    weights = torch.FloatTensor([1 - float(abs(i-window))/(window+1) for i in range(2*window+1)]).to(param_.device)
 
     assert param.shape[0] > 2 * window, 'Frame number is too small for smoothing'
 
     for i in range(window,param.shape[0]-window):
-        _param[i] = torch.matmul(weights,param[i-window:i+window+1])/torch.sum(weights)
+        param_[i] = torch.matmul(weights,param[i-window:i+window+1])/torch.sum(weights)
 
-    return _param
+    return param_
 
 def find_affine_transform(P1, P2):
     '''

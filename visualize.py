@@ -158,6 +158,7 @@ def main(args,
                 MeshRenderer, 
                 MeshRasterizer,  
                 SoftPhongShader,
+                HardPhongShader,
                 TexturesUV,
                 TexturesVertex
             )
@@ -184,7 +185,11 @@ def main(args,
                     cameras=cameras, 
                     raster_settings=raster_settings
                 ),
-                shader=SoftPhongShader(
+                # shader=SoftPhongShader(
+                #     device=device, 
+                #     cameras=cameras,
+                #     lights=lights
+                shader=HardPhongShader(
                     device=device, 
                     cameras=cameras,
                     lights=lights
